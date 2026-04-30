@@ -124,3 +124,23 @@ This is intentionally framed as a controlled augmentation scenario, not a tightl
 - gallery or reporting format
 
 Strong submissions will balance simplicity, reproducibility, and usefulness.
+
+## Submission Guidelines
+
+- Fork the repository and create a feature branch for your contribution.
+- Submit your work through a pull request against the main repository. Do not submit code or datasets through email, chat, or shared drives.
+- Open an issue first if your proposed approach changes the scope materially, introduces a major dependency, or requires a different runtime than the one described in this README.
+- Include a short solution approach in the pull request that explains the problem you solved, the design choices you made, and any tradeoffs or limitations.
+- Include architecture documentation that shows the main components, data flow, configuration files, and extension points. A simple diagram is preferred where useful.
+- Include setup and running instructions that allow a reviewer to run the project from a clean checkout.
+- Include deployment notes, even if the project only runs locally. State the expected runtime, environment variables, dependencies, storage paths, and any optional services.
+- Include scaling notes that explain what would need to change for larger image sets, parallel processing, cloud storage, queues, or managed compute.
+- Include integration notes describing how the implementation could later plug into a broader data generation or dataset preparation workflow without depending on hidden internal APIs.
+- Include code documentation for public functions, configuration options, CLI commands, data formats, and output folders.
+- Include sample inputs and outputs using only open, synthetic, or contributor-created data. Do not include private, proprietary, customer, or restricted-license data.
+- Include tests or validation checks for the core behavior, such as manifest creation, metadata completeness, image output generation, and error handling.
+- Include a short quality report or evidence section showing generated examples, known failure cases, and how reviewers should inspect the outputs.
+- Keep secrets, credentials, API keys, generated caches, large output folders, and local environment files out of the repository.
+- Add or update `.gitignore` where needed to prevent accidental submission of local data, generated artifacts, or credentials.
+- Use clear commit messages and keep unrelated refactors out of the pull request.
+- The pull request should be reviewable as a standalone contribution: reviewers should not need access to internal roadmaps, private datasets, or proprietary platform details to understand or run it.
