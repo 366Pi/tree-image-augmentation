@@ -1,146 +1,140 @@
-# Tree Image Augmentation
+# Tree Image Augmentation Challenge
 
-## Overview
+## Background
 
-Build a reusable tree image augmentation scenario using open or synthetic tree images, configurable visual transformations, metadata tracking, and a simple review path.
+[FloCard](https://flocard.app) is a sustainability-focused digital platform that combines digital identity, community engagement, climate action, and nature-based project tools. The platform supports businesses, communities, and sustainability initiatives through features such as digital business cards, sustainability profiles, carbon offsetting, project development, and tools aligned with climate and SDG goals.
 
-This scenario should focus on creating controlled image variations from a small set of base images. The intent is to produce a practical reference implementation that can later serve as a starting point for broader synthetic image generation and dataset preparation workflows.
+FloCard also has a Tree Planters App used by communities, planters, and farms working on afforestation projects.
 
-The contribution should remain self-contained, use only open or synthetic images, and avoid dependency on any internal platform, dataset, or proprietary taxonomy.
+The app helps users digitally tag and trace trees using:
+
+- geo-tagged single tree images
+- Google Map based boundary tagging for clusters of trees or forest areas
+- mobile app or mobile browser based field capture
+- offline capture support for areas with low or no internet connectivity
+
+Tree tagging usually happens in remote or low-connectivity areas. Users capture the tree image and location first. Later, when internet connectivity is available, the captured assets are synced and edited with details such as species, age, date of plantation, and related information. After review and approval, the tree record becomes a blockchain-based tree asset.
+
+## Current Tree Tagging Flow
+
+The tree asset creation process broadly follows three steps:
+
+1. A user captures a tree image and geo-tag in the mobile app or mobile browser, often in offline mode.
+2. The asset is synced later and edited with details such as species, age, plantation date, and other metadata.
+3. The asset goes through an approval step before becoming a blockchain-based asset.
+
+This process works, but it depends heavily on the quality of the image and the accuracy of manually entered tree details.
 
 ## Problem Statement
 
-Given a limited number of clean tree images, generate controlled visual variations that preserve the core tree identity while changing environmental or capture conditions.
+During tree tagging, users may accidentally capture non-tree images, unclear tree images, or images where the tree species is difficult to identify.
 
-The solution should demonstrate a practical workflow that can:
+Even when the image is valid, users may not always know:
 
-- ingest a small base image set
-- apply configurable augmentations
-- preserve source image traceability
-- generate labels and metadata for each output
-- produce a reviewable synthetic image pack
-- report basic quality and generation metrics
+- the correct species
+- the age of the tree
+- the health or visible condition of the tree
+- whether the image is good enough for review
 
-## Scope
+These details are important because tree species, age, and health are used to estimate carbon or GHG offset potential. Incorrect metadata can affect downstream reporting and asset quality.
 
-The scenario should focus on:
+FloCard is exploring an AI-assisted workflow where tree images captured during the tagging process can be analyzed to help identify whether the image contains a tree, estimate the species, and provide tentative age and health indicators.
 
-- open or synthetic base tree images
-- deterministic or semi-deterministic image augmentation
-- transformations such as:
-  - brightness and contrast
-  - blur
-  - crop and resize
-  - rotation
-  - weather overlays
-  - partial occlusion
-  - background variation where practical
-  - color temperature / lighting changes
-- metadata for each generated image
-- a simple output manifest
-- a basic visual gallery or review report
-- documentation for setup, usage, assumptions, and limitations
+To build and train such models, a large quantity of training images is needed across different tree species, ages, seasons, health conditions, locations, lighting conditions, and capture qualities. The initial focus is on tree species common in eastern India, with the possibility of expanding later.
 
-## Non-Goals
+## Challenge Objective
 
-This work item is not intended to cover:
+Build a solution that can take a limited number of seed images for a tree species and generate a larger set of realistic synthetic variations using image augmentation, GAN-style, or similar model-based image variation techniques.
 
-- generative image models
-- GANs, diffusion models, or hosted image-generation APIs
-- real customer image data
-- proprietary tree-species taxonomy
-- production model training
-- botanical correctness guarantees
-- production-grade annotation workflows
-- internal platform architecture or roadmap
+## Expected Outcome
+
+A useful solution should be able to:
+
+- accept a small set of tree seed images
+- generate many realistic image variations from those seed images
+- allow customization of variation parameters
+- preserve traceability between each generated image and its source image
+- produce metadata for every generated image
+- provide a simple way to review generated outputs
+- document the approach, assumptions, limitations, and failure cases
+
+## Customization Requirements
+
+The solution should allow users to configure generation options such as:
+
+- number of images to generate
+- target species label
+- age or growth stage
+- season
+- time of day
+- lighting condition
+- weather condition
+- camera angle
+- background variation
+- leaf density
+- tree health or visible stress condition
+- blur, noise, occlusion, or image quality variations
+
+Contributors may propose additional useful parameters.
+
+## Suggested Approach
+
+Contributors are free to propose their own approach.
+
+Possible approaches may include:
+
+- classical image augmentation
+- computer vision based transformations
+- GAN-based image generation or variation
+- style transfer
+- background replacement
+- controlled perturbation of lighting, color, blur, crop, and occlusion
+- hybrid approaches that combine multiple techniques
+
+The solution should explain why the selected approach is suitable and what types of variation it can and cannot produce.
 
 ## Suggested Stack
 
-To stay broadly aligned with practical open contribution workflows, contributions should preferably use:
+Preferred languages:
 
 - Python
-- Pillow, OpenCV, or Albumentations
-- JSON or JSONL for metadata
-- a simple static HTML gallery or notebook for review
+- C#
 
-Equivalent alternatives may be proposed if well justified.
+Possible libraries and tools:
 
-## Data Expectations
+- OpenCV
+- Pillow
+- Albumentations
+- PyTorch
+- TensorFlow
+- ONNX Runtime
+- ML.NET where applicable
 
-The base image set should use only:
+Contributors may use other tools if they explain the reasoning.
 
-- openly licensed images
-- contributor-created images
-- synthetic placeholder images
+## Data Access
 
-Useful metadata fields may include:
+Seed images are not included publicly in this repository unless they are open, synthetic, or approved for public use.
 
-- source image ID
-- source license
-- species label, if known
-- original image dimensions
-- generated image ID
-- augmentation type
-- augmentation parameters
-- output file path
-- generation timestamp
+Contributors may use:
 
-Contributors are free to design the exact metadata format as long as outputs remain traceable and reviewable.
+- open-license tree images
+- contributor-created tree images
+- approved seed image packs provided by the maintainers
 
-## Expected Deliverables
+Contributors who need access to seed images can contact the maintainers by email. Contact [abhijeet@366pitech.com] for a sample image dataset
 
-A good submission should include:
+Do not commit private geo-tagged images, precise location data, private farm or project data, credentials, or restricted-license imagery to the repository.
 
-- a working augmentation pipeline
-- a small sample base image set or download instructions for open images
-- generated sample outputs
-- configuration for variation types and counts
-- output metadata manifest
-- simple visual review gallery or notebook
-- documentation covering setup, usage, assumptions, and limitations
-- basic metrics such as generated image count, failed generations, and processing time
+## Contribution  Guidelines
 
-## Success Criteria
-
-A submission will be considered successful if:
-
-- it is runnable and understandable by reviewers
-- it uses open or synthetic data only
-- it generates multiple useful variations from each base image
-- every generated image can be traced back to its source image
-- augmentation parameters are captured in metadata
-- outputs can be visually reviewed
-- the scenario can be reused later as a baseline for comparing other generation methods
-
-## Notes
-
-This is intentionally framed as a controlled augmentation scenario, not a tightly specified implementation task. Contributors are expected to apply their own thinking to:
-
-- augmentation methods
-- configuration format
-- output folder structure
-- metadata schema
-- quality review approach
-- gallery or reporting format
-
-Strong submissions will balance simplicity, reproducibility, and usefulness.
-
-## Submission Guidelines
-
-- Fork the repository and create a feature branch for your contribution.
-- Submit your work through a pull request against the main repository. Do not submit code or datasets through email, chat, or shared drives.
-- Open an issue first if your proposed approach changes the scope materially, introduces a major dependency, or requires a different runtime than the one described in this README.
-- Include a short solution approach in the pull request that explains the problem you solved, the design choices you made, and any tradeoffs or limitations.
-- Include architecture documentation that shows the main components, data flow, configuration files, and extension points. A simple diagram is preferred where useful.
-- Include setup and running instructions that allow a reviewer to run the project from a clean checkout.
-- Include deployment notes, even if the project only runs locally. State the expected runtime, environment variables, dependencies, storage paths, and any optional services.
-- Include scaling notes that explain what would need to change for larger image sets, parallel processing, cloud storage, queues, or managed compute.
-- Include integration notes describing how the implementation could later plug into a broader data generation or dataset preparation workflow without depending on hidden internal APIs.
-- Include code documentation for public functions, configuration options, CLI commands, data formats, and output folders.
-- Include sample inputs and outputs using only open, synthetic, or contributor-created data. Do not include private, proprietary, customer, or restricted-license data.
-- Include tests or validation checks for the core behavior, such as manifest creation, metadata completeness, image output generation, and error handling.
-- Include a short quality report or evidence section showing generated examples, known failure cases, and how reviewers should inspect the outputs.
-- Keep secrets, credentials, API keys, generated caches, large output folders, and local environment files out of the repository.
-- Add or update `.gitignore` where needed to prevent accidental submission of local data, generated artifacts, or credentials.
-- Use clear commit messages and keep unrelated refactors out of the pull request.
-- The pull request should be reviewable as a standalone contribution: reviewers should not need access to internal roadmaps, private datasets, or proprietary platform details to understand or run it.
+- Fork the repository.
+- Create a feature branch.
+- Submit your contribution through a pull request.
+- Keep the implementation focused on this challenge.
+- Do not commit private images, precise location data, credentials, or large generated datasets.
+- Include setup and running instructions.
+- Include sample output using safe, open, synthetic, or approved images.
+- Explain your assumptions and known limitations.
+- Mention any additional data you needed or data gaps you found.
+- Document how the solution can be customized and scaled.
