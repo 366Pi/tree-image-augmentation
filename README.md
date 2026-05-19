@@ -1,140 +1,193 @@
-# Tree Image Augmentation Challenge
+# Tree Image Augmentation Pipeline
 
-## Background
+A simple, reusable pipeline that takes a small set of base tree images and generates
+controlled visual variations for use in synthetic dataset preparation workflows.
 
-[FloCard](https://flocard.app) is a sustainability-focused digital platform that combines digital identity, community engagement, climate action, and nature-based project tools. The platform supports businesses, communities, and sustainability initiatives through features such as digital business cards, sustainability profiles, carbon offsetting, project development, and tools aligned with climate and SDG goals.
+---
 
-FloCard also has a Tree Planters App used by communities, planters, and farms working on afforestation projects.
+## What It Does
 
-The app helps users digitally tag and trace trees using:
+Given a few base tree images, this pipeline:
+- Applies 10 types of visual augmentations to each image
+- Saves every generated image with a unique traceable filename
+- Records full metadata for every output in `manifest.jsonl`
+- Builds a visual HTML gallery for reviewing all outputs
 
-- geo-tagged single tree images
-- Google Map based boundary tagging for clusters of trees or forest areas
-- mobile app or mobile browser based field capture
-- offline capture support for areas with low or no internet connectivity
+---
 
-Tree tagging usually happens in remote or low-connectivity areas. Users capture the tree image and location first. Later, when internet connectivity is available, the captured assets are synced and edited with details such as species, age, date of plantation, and related information. After review and approval, the tree record becomes a blockchain-based tree asset.
+## Project Structure
 
-## Current Tree Tagging Flow
+```
+tree-augmentation/
+├── base_images/            # Source tree images (input)
+├── augmented_output/       # All generated images (output)
+├── gallery/
+│   └── index.html          # Visual review gallery (open in browser)
+├── create_base_images.py   # Script to generate synthetic base images
+├── augment.py              # Main augmentation pipeline
+├── gallery.py              # Builds the HTML review gallery
+├── config.json             # All settings and augmentation parameters
+└── manifest.jsonl          # Auto-generated metadata for every image
+```
 
-The tree asset creation process broadly follows three steps:
+---
 
-1. A user captures a tree image and geo-tag in the mobile app or mobile browser, often in offline mode.
-2. The asset is synced later and edited with details such as species, age, plantation date, and other metadata.
-3. The asset goes through an approval step before becoming a blockchain-based asset.
+## Setup
 
-This process works, but it depends heavily on the quality of the image and the accuracy of manually entered tree details.
+### Requirements
+- Python 3.8 or higher
+- Pillow library
 
-## Problem Statement
+### Install dependencies
+```bash
+pip install Pillow
+```
 
-During tree tagging, users may accidentally capture non-tree images, unclear tree images, or images where the tree species is difficult to identify.
+### Clone or download the project
+```bash
+cd tree-augmentation
+```
 
-Even when the image is valid, users may not always know:
+---
 
-- the correct species
-- the age of the tree
-- the health or visible condition of the tree
-- whether the image is good enough for review
+## How To Run
 
-These details are important because tree species, age, and health are used to estimate carbon or GHG offset potential. Incorrect metadata can affect downstream reporting and asset quality.
+### Step 1 — Generate base images (only needed once)
+```bash
+python create_base_images.py
+```
 
-FloCard is exploring an AI-assisted workflow where tree images captured during the tagging process can be analyzed to help identify whether the image contains a tree, estimate the species, and provide tentative age and health indicators.
+### Step 2 — Run the augmentation pipeline
+```bash
+python augment.py
+```
 
-To build and train such models, a large quantity of training images is needed across different tree species, ages, seasons, health conditions, locations, lighting conditions, and capture qualities. The initial focus is on tree species common in eastern India, with the possibility of expanding later.
+### Step 3 — Build the visual gallery
+```bash
+python gallery.py
+```
 
-## Challenge Objective
+### Step 4 — Open the gallery
+Open `gallery/index.html` in any browser to visually review all outputs.
 
-Build a solution that can take a limited number of seed images for a tree species and generate a larger set of realistic synthetic variations using image augmentation, GAN-style, or similar model-based image variation techniques.
+> Always run in this order: `augment.py` first, then `gallery.py`
 
-## Expected Outcome
+---
 
-A useful solution should be able to:
+## Augmentation Types
 
-- accept a small set of tree seed images
-- generate many realistic image variations from those seed images
-- allow customization of variation parameters
-- preserve traceability between each generated image and its source image
-- produce metadata for every generated image
-- provide a simple way to review generated outputs
-- document the approach, assumptions, limitations, and failure cases
+| Type | What It Does |
+|---|---|
+| `brightness` | Makes image darker or brighter (factors: 0.5, 0.75, 1.25, 1.5) |
+| `blur` | Applies gaussian blur (radius: 1, 2, 4) |
+| `rotation` | Rotates image left or right (angles: -30, -15, 15, 30 degrees) |
+| `crop` | Zooms in by cropping edges (15% margin) |
+| `contrast` | Increases or decreases contrast (factors: 0.5, 0.75, 1.25, 1.5) |
+| `weather_rain` | Overlays random rain streak lines |
+| `weather_fog` | Adds a semi-transparent fog layer |
+| `color_temp_warm` | Boosts red channel, reduces blue (warm/sunset look) |
+| `color_temp_cool` | Boosts blue channel, reduces red (cool/cloudy look) |
+| `occlusion` | Adds random black boxes to partially hide the tree |
 
-## Customization Requirements
+---
 
-The solution should allow users to configure generation options such as:
+## Configuration
 
-- number of images to generate
-- target species label
-- age or growth stage
-- season
-- time of day
-- lighting condition
-- weather condition
-- camera angle
-- background variation
-- leaf density
-- tree health or visible stress condition
-- blur, noise, occlusion, or image quality variations
+All settings live in `config.json`. You can change them without touching the code.
 
-Contributors may propose additional useful parameters.
+```json
+{
+  "variations_per_image": 6,
+  "augmentations": {
+    "brightness": {
+      "enabled": true,
+      "factors": [0.5, 0.75, 1.25, 1.5]
+    },
+    "blur": {
+      "enabled": true,
+      "radius_values": [1, 2, 4]
+    }
+  }
+}
+```
 
-## Suggested Approach
+To **disable** any augmentation, set `"enabled": false`.
+To **add more values**, just add to the list (e.g. more rotation angles).
 
-Contributors are free to propose their own approach.
+---
 
-Possible approaches may include:
+## Metadata Format
 
-- classical image augmentation
-- computer vision based transformations
-- GAN-based image generation or variation
-- style transfer
-- background replacement
-- controlled perturbation of lighting, color, blur, crop, and occlusion
-- hybrid approaches that combine multiple techniques
+Every generated image is recorded in `manifest.jsonl` (one JSON object per line):
 
-The solution should explain why the selected approach is suitable and what types of variation it can and cannot produce.
+```json
+{
+  "source_image_id": "tree_01",
+  "source_license": "synthetic/contributor-created",
+  "species_label": "unknown",
+  "original_dimensions": [600, 500],
+  "generated_image_id": "tree_01__brightness__20260506_034255_800763.jpg",
+  "augmentation_type": "brightness",
+  "augmentation_params": {"factor": 0.5},
+  "output_file_path": "augmented_output/tree_01__brightness__....jpg",
+  "generation_timestamp": "2026-05-06T03:42:55Z"
+}
+```
 
-## Suggested Stack
+Every output is fully traceable back to its source image.
 
-Preferred languages:
+---
 
-- Python
-- C#
+## Sample Results
 
-Possible libraries and tools:
+| Metric | Value |
+|---|---|
+| Base images | 5 |
+| Total images generated | 105 |
+| Augmentation types | 10 |
+| Failed generations | 0 |
+| Processing time | ~0.82 seconds |
 
-- OpenCV
-- Pillow
-- Albumentations
-- PyTorch
-- TensorFlow
-- ONNX Runtime
-- ML.NET where applicable
+---
 
-Contributors may use other tools if they explain the reasoning.
+## Data
 
-## Data Access
+All base images are **synthetically generated** using Python and Pillow.
+No real, proprietary, or restricted-license images are used anywhere in this project.
 
-Seed images are not included publicly in this repository unless they are open, synthetic, or approved for public use.
+---
 
-Contributors may use:
+## Assumptions and Limitations
 
-- open-license tree images
-- contributor-created tree images
-- approved seed image packs provided by the maintainers
+- Base images must be `.jpg`, `.jpeg`, or `.png` format
+- Weather effects are randomised so results vary slightly each run
+- Occlusion boxes are placed randomly — not semantically targeted
+- No botanical accuracy is guaranteed (images are synthetic placeholders)
+- Not designed for production-scale datasets (no parallel processing)
 
-Contributors who need access to seed images can contact the maintainers by email. Contact [abhijeet@366pitech.com] for a sample image dataset
+---
 
-Do not commit private geo-tagged images, precise location data, private farm or project data, credentials, or restricted-license imagery to the repository.
+## Scaling Notes
 
-## Contribution  Guidelines
+To scale this pipeline for larger datasets:
+- Add `multiprocessing` to process images in parallel
+- Store outputs in cloud storage (S3, GCS) by changing the output path in `config.json`
+- Switch manifest format to a database for querying large manifests
+- Add a job queue (e.g. Celery) for distributed processing
 
-- Fork the repository.
-- Create a feature branch.
-- Submit your contribution through a pull request.
-- Keep the implementation focused on this challenge.
-- Do not commit private images, precise location data, credentials, or large generated datasets.
-- Include setup and running instructions.
-- Include sample output using safe, open, synthetic, or approved images.
-- Explain your assumptions and known limitations.
-- Mention any additional data you needed or data gaps you found.
-- Document how the solution can be customized and scaled.
+---
+
+## Integration Notes
+
+This pipeline can plug into a broader data preparation workflow by:
+- Pointing `input_dir` to any image folder
+- Reading `manifest.jsonl` downstream for dataset labelling tools
+- Extending `augment.py` with new augmentation functions following the same pattern
+
+---
+
+## License
+
+All code and synthetic images in this project are open and freely reusable.
+
+cd tree-image-augmentation
