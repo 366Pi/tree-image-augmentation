@@ -164,7 +164,6 @@ No real, proprietary, or restricted-license images are used anywhere in this pro
 - Occlusion boxes are placed randomly — not semantically targeted
 - No botanical accuracy is guaranteed (images are synthetic placeholders)
 - Not designed for production-scale datasets (no parallel processing)
-
 ---
 
 ## Scaling Notes
@@ -184,10 +183,6 @@ This pipeline can plug into a broader data preparation workflow by:
 - Reading `manifest.jsonl` downstream for dataset labelling tools
 - Extending `augment.py` with new augmentation functions following the same pattern
 
----
 
-## License
-
-All code and synthetic images in this project are open and freely reusable.
 
 cd tree-image-augmentation
