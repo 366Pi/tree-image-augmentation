@@ -1,0 +1,75 @@
+{
+  "input_dir": "base_images",
+  "output_dir": "augmented_output",
+  "gallery_dir": "gallery",
+  "manifest_file": "manifest.jsonl",
+  "variations_per_image": 6,
+
+  "species_label": "mango",
+  "available_species": ["mango", "neem", "banyan", "peepal", "unknown"],
+
+  "growth_stage": "mature",
+  "available_growth_stages": ["sapling", "young", "mature", "old"],
+
+  "location_tag": {
+    "enabled": false,
+    "latitude": null,
+    "longitude": null
+  },
+
+  "augmentations": {
+    "brightness": {
+      "enabled": true,
+      "factors": [0.5, 0.75, 1.25, 1.5]
+    },
+    "blur": {
+      "enabled": true,
+      "radius_values": [1, 2, 4]
+    },
+    "rotation": {
+      "enabled": true,
+      "angles": [-30, -15, 15, 30]
+    },
+    "crop": {
+      "enabled": true,
+      "crop_percent": 0.15
+    },
+    "contrast": {
+      "enabled": true,
+      "factors": [0.5, 0.75, 1.25, 1.5]
+    },
+    "weather": {
+      "enabled": true,
+      "types": ["rain", "fog"]
+    },
+    "color_temperature": {
+      "enabled": true,
+      "modes": ["warm", "cool"]
+    },
+    "occlusion": {
+      "enabled": true,
+      "num_boxes": 3,
+      "max_box_size": 80
+    },
+    "season": {
+      "enabled": true,
+      "types": ["spring", "summer", "monsoon", "winter"]
+    },
+    "time_of_day": {
+      "enabled": true,
+      "types": ["morning", "noon", "evening"]
+    },
+    "health": {
+      "enabled": true,
+      "conditions": ["healthy", "stressed", "diseased"]
+    },
+    "noise": {
+      "enabled": true,
+      "intensity_values": [10, 25, 40]
+    },
+    "motion_blur": {
+      "enabled": true,
+      "strengths": [3, 6]
+    }
+  }
+}
